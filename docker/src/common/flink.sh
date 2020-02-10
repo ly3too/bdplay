@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-JOB_MANAGER_RPC_ADDRESS=${JOB_MANAGER_RPC_ADDRESS:-$(hostname -f)}
-CONF_FILE="${FLINK_HOME}/conf/flink-conf.yaml"
-
+export HOSTNAME_MASTER=${HOSTNAME_MASTER:-$(hostname -f)}
 export FLINK_JOBMANAGER_HEAP_SIZE=${FLINK_JOBMANAGER_HEAP_SIZE:-1024m}
 export FLINK_TASKMANAGER_HEAP_SIZE=${FLINK_TASKMANAGER_HEAP_SIZE:-1024m}
 export FLINK_TASKMANAGER_NUM_SLOT=${FLINK_TASKMANAGER_NUM_SLOT:-`nproc --all`}
+
+CONF_FILE="${FLINK_HOME}/conf/flink-conf.yaml"
 
 function subst_flink_conf {
     [ ! -z ${FLINK_CONF_BY_FILE} ] && ${FLINK_CONF_BY_FILE} && return 0
@@ -35,15 +35,9 @@ function copy_plugins_if_required {
 }
 
 function start_job_manager {
-    copy_plugins_if_required
-    subst_flink_conf
-
     gosu bdplay "$FLINK_HOME/bin/jobmanager.sh" start
 }
 
 function start_task_manager {
-    copy_plugins_if_required
-    subst_flink_conf
-
     gosu bdplay "$FLINK_HOME/bin/taskmanager.sh" start
 }

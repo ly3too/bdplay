@@ -1,1 +1,3 @@
 .idea/
+docker/build/
+docker/download/

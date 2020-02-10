@@ -8,11 +8,12 @@ if [[ "$1" = "help" ]]; then
 
 elif [[ "$1" = "master" ]]; then
     ls ${THIS_DIR}/master/*.sh | xargs bash
+    shift 1
 
 elif [[ "$1" = "worker" ]]; then
     ls ${THIS_DIR}/worker/*.sh | xargs bash
+    shift 1
 
 fi
 
-shift 1
 exec "$@"

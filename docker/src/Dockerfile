@@ -16,36 +16,85 @@
 # limitations under the License.
 ###############################################################################
 
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
+
+# install flink
+COPY flink /opt/flink
+ARG SCALA_VERSION_ARG
+ENV SCALA_VERSION=${SCALA_VERSION_ARG}
+ARG FLINK_VERSION_ARG
+ENV FLINK_VERSION=$FLINK_VERSION_ARG
+ENV FLINK_HOME=/opt/flink
+ENV PATH=$FLINK_HOME/bin:$PATH
+EXPOSE 6123 # jobmanger.rpc.port
+EXPOSE 8081 # webui
+
+# install hadoop
+COPY hadoop /opt/hadoop
+ARG HADOOP_VERSION_ARG
+ENV HADOOP_VERSION=$HADOOP_VERSION_ARG
+ENV HADOOP_HOME=/opt/hadoop
+ENV PATH=$HADOOP_HOME/bin:$PATH
+EXPOSE 9000 # hdfs server port
+EXPOSE 9870 # hdfs web front end
+EXPOSE 8088 # resource manager webui
+EXPOSE 19888 # job history server webui
+EXPOSE 10020 # job history rpc port
+
+# install spark
+COPY spark /opt/spark
+ARG SPARK_VERSION_ARG
+ENV SPARK_VERSION=$SPARK_VERSION_ARG
+ENV SPARK_HOME=/opt/spark
+ENV PATH=$SPARK_HOME/bin:$PATH
+ENV SPARK_MASTER_PORT=7077
+ENV SPARK_MASTER_WEBUI_PORT=8082
+EXPOSE 7077
+EXPOSE 8082
+
+# install kafka
+COPY kafka /opt/kafka
+ARG KAFKA_VERSION_ARG
+ENV KAFKA_VERSION=$KAFKA_VERSION_ARG
+ENV KAFKA_HOME=/opt/kafka
+ENV PATH=$KAFKA_HOME/bin:$PATH
+
+
 # Install dependencies
 RUN set -ex; \
-  apt-get update; \
-  apt-get -y install libsnappy1v5 gettext-base; \
-  rm -rf /var/lib/apt/lists/*
+    cp -a /etc/apt/sources.list /etc/apt/sources.list.bak; \
+    sed -i "s@http://.*debian.org@http://mirrors.huaweicloud.com@g" /etc/apt/sources.list; \
+    apt-get update; \
+    apt-get -y install libsnappy1v5 gettext-base; \
+    apt -y install gosu;\
+    apt -y install procps gdb net-tools; \
+    rm -rf /var/lib/apt/lists/*
 
 # Grab gosu for easy step-down from root
 ENV GOSU_VERSION 1.11
 RUN set -ex; \
-    apt -y install gosu;\
     gosu nobody true
+
 RUN groupadd --system --gid=9999 bdplay && \
-    useradd --system --home-dir $FLINK_HOME --uid=9999 --gid=bdplay bdplay
-
-# env
-ENV SCALA_VERSION=$SCALA_VERSION_ARG
-ENV FLINK_VERSION=$FLINK_VERSION_ARG
-ENV FLINK_HOME=/opt/flink
-ENV PATH=$FLINK_HOME/bin:$PATH
-
-# install flink
-COPY flink /opt/
+    useradd --system --home-dir /opt --uid=9999 --gid=bdplay bdplay
 
 # install startup script
-COPY common /opt/
-COPY master /opt/
-COPY worker /opt/
-COPY conf /opt/
+COPY common /opt/common
+COPY master /opt/master
+COPY worker /opt/worker
+COPY conf /opt/conf
+COPY start.sh /opt/
 
-RUN chown -R bdplay:bdplay /opt
+RUN set -ex; \
+    chmod a+x /opt/*.sh; \
+    chmod a+x /opt/common/*.sh; \
+    chmod a+x /opt/master/*.sh; \
+    chmod a+x /opt/worker/*.sh; \
+    chown -R bdplay:bdplay /opt; \
+    mkdir -p /data; \
+    chown -R bdplay:bdplay /data
 
+WORKDIR /opt/
 ENTRYPOINT ["/opt/start.sh"]
 CMD ["help"]
