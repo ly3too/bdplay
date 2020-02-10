@@ -17,6 +17,6 @@ function config_broker {
 
 function start_broker {
     if $KAFKA_ENABLED; then
-        $KAFKA_HOME/bin/kafka-server-start.sh "$KAFKA_HOME/config/server.properties"
+        $KAFKA_HOME/bin/kafka-server-start.sh -daemon "$KAFKA_HOME/config/server.properties"
     fi
 }

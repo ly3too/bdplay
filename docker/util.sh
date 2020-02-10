@@ -43,3 +43,10 @@ function download_and_verify_asc {
         exit 1
     fi
 }
+
+function clear_docker_img {
+    [ -z $1 ] && echo "args empty" && exit 1
+    docker ps -f "ancestor=$1" | awk '{if (NR > 1) print $1}'| xargs docker stop
+    docker ps -f "ancestor=$1" -a | awk '{if (NR > 1) print $1}'| xargs docker rm
+    docker rmi $1
+}

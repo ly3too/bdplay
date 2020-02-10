@@ -74,6 +74,7 @@ mkdir -p $BUILD_DIR/kafka && tar -xvzf ${DOWNLOAD_DIR}/`basename $KAFKA_URL_PATH
 # build docker
 cp -rf $THIS_DIR/src/* $BUILD_DIR/
 cd $BUILD_DIR
+clear_docker_img bdplay
 docker build -t bdplay --build-arg BASE_IMAGE=$BASE_IMAGE --build-arg SCALA_VERSION_ARG=$SCALA_VERSION \
     --build-arg FLINK_VERSION_ARG=$FLINK_VERSION --build-arg HADOOP_VERSION_ARG=$HADOOP_VERSION \
     --build-arg SPARK_VERSION_ARG=$SPARK_VERSION --build-arg KAFKA_VERSION_ARG=$KAFKA_VERSION \

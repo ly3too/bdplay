@@ -7,11 +7,11 @@ if [[ "$1" = "help" ]]; then
     exit 0
 
 elif [[ "$1" = "master" ]]; then
-    ls ${THIS_DIR}/master/*.sh | xargs bash
+    ls ${THIS_DIR}/master/*.sh | xargs -L 1 gosu bdplay bash
     shift 1
 
 elif [[ "$1" = "worker" ]]; then
-    ls ${THIS_DIR}/worker/*.sh | xargs bash
+    ls ${THIS_DIR}/worker/*.sh | xargs -L 1 gosu bdplay bash
     shift 1
 
 fi

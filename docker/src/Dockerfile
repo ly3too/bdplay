@@ -27,8 +27,10 @@ ARG FLINK_VERSION_ARG
 ENV FLINK_VERSION=$FLINK_VERSION_ARG
 ENV FLINK_HOME=/opt/flink
 ENV PATH=$FLINK_HOME/bin:$PATH
-EXPOSE 6123 # jobmanger.rpc.port
-EXPOSE 8081 # webui
+# jobmanger.rpc.port
+EXPOSE 6123
+# webui
+EXPOSE 8081
 
 # install hadoop
 COPY hadoop /opt/hadoop
@@ -36,11 +38,16 @@ ARG HADOOP_VERSION_ARG
 ENV HADOOP_VERSION=$HADOOP_VERSION_ARG
 ENV HADOOP_HOME=/opt/hadoop
 ENV PATH=$HADOOP_HOME/bin:$PATH
-EXPOSE 9000 # hdfs server port
-EXPOSE 9870 # hdfs web front end
-EXPOSE 8088 # resource manager webui
-EXPOSE 19888 # job history server webui
-EXPOSE 10020 # job history rpc port
+# hdfs server port
+EXPOSE 9000
+# hdfs web front end
+EXPOSE 9870
+# resource manager webui
+EXPOSE 8088
+# job history server webui
+EXPOSE 19888
+# job history rpc port
+EXPOSE 10020
 
 # install spark
 COPY spark /opt/spark
@@ -59,6 +66,7 @@ ARG KAFKA_VERSION_ARG
 ENV KAFKA_VERSION=$KAFKA_VERSION_ARG
 ENV KAFKA_HOME=/opt/kafka
 ENV PATH=$KAFKA_HOME/bin:$PATH
+EXPOSE 9092
 
 
 # Install dependencies
@@ -69,6 +77,7 @@ RUN set -ex; \
     apt-get -y install libsnappy1v5 gettext-base; \
     apt -y install gosu;\
     apt -y install procps gdb net-tools; \
+    apt -y install vim; \
     rm -rf /var/lib/apt/lists/*
 
 # Grab gosu for easy step-down from root

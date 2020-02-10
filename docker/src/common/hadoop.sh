@@ -10,17 +10,18 @@ export HADOOP_REDUCE_MEM_MB=${HADOOP_REDUCE_MEM_MB:-3072}
 
 
 THIS_DIR=`dirname $0`
-HADOOP_CONF_PATH=${HADOOP_HOME}/etc/hadoop
+export HADOOP_CONF_PATH=${HADOOP_HOME}/etc/hadoop
 
 function configure_one {
     target_file=${HADOOP_CONF_PATH}/`basename $1`
     envsubst < $1 > ${target_file}
     echo "config file: $target_file" && grep '^[^\n#]' "${target_file}"
 }
+export -f configure_one
 
 function configure_hadoop {
     [ ! -z ${HADOOP_CONF_BY_FILE} ] && ${HADOOP_CONF_BY_FILE} && return 0
-    ls ${THIS_DIR}/../conf/hadoop/*.xml | xargs -L 1 configure_one
+    ls ${THIS_DIR}/../conf/hadoop/*.xml | xargs -I % bash -c "configure_one %"
 }
 
 function format_namenode {

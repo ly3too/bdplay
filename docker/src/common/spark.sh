@@ -2,6 +2,7 @@
 
 export HOSTNAME_MASTER=${HOSTNAME_MASTER:-$(hostname -f)}
 export SPARK_MASTER_HOST=$HOSTNAME_MASTER
+export SPARK_DIST_CLASSPATH=$(hadoop classpath):${SPARK_DIST_CLASSPATH}
 
 function start_master {
     $SPARK_HOME/sbin/start-master.sh

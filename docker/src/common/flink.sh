@@ -10,7 +10,7 @@ CONF_FILE="${FLINK_HOME}/conf/flink-conf.yaml"
 function subst_flink_conf {
     [ ! -z ${FLINK_CONF_BY_FILE} ] && ${FLINK_CONF_BY_FILE} && return 0
     envsubst < /opt/conf/flink/flink-conf.yaml.template > ${CONF_FILE}
-    echo "config file: " && grep '^[^\n#]' "${CONF_FILE}"
+    echo "config file: ${CONF_FILE}" && grep '^[^\n#]' "${CONF_FILE}"
 }
 
 function copy_plugins_if_required {
@@ -35,9 +35,9 @@ function copy_plugins_if_required {
 }
 
 function start_job_manager {
-    gosu bdplay "$FLINK_HOME/bin/jobmanager.sh" start
+    "$FLINK_HOME/bin/jobmanager.sh" start
 }
 
 function start_task_manager {
-    gosu bdplay "$FLINK_HOME/bin/taskmanager.sh" start
+    "$FLINK_HOME/bin/taskmanager.sh" start
 }

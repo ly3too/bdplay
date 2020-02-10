@@ -88,7 +88,7 @@ useful docker env variables
 |------|------------------------------------|
 |key---|-   default      -|----------------description------------------|
 |KAFKA_ENABLED| true | enable kafka on each worker |
-|KAFKA_ZOOKEEPER_CONNECT | - | comma separated zookeeper host:port |
+|KAFKA_ZOOKEEPER_CONNECT | - | comma separated zookeeper host:port, if kafak enabled this variable is required |
 |KAFKA_CONF_BY_FILE | - | set to true if use direct file config |
 
 ### port map
