@@ -2,6 +2,7 @@
 
 export HOSTNAME_MASTER=${HOSTNAME_MASTER:-$(hostname -f)}
 export KAFKA_ENABLED=${KAFKA_ENABLED:-true}
+export KAFKA_ADV_HOSTNAME=${KAFKA_ADV_HOSTNAME:-$(hostname -f)}
 
 function config_broker {
     [ ! -z ${KAFKA_CONF_BY_FILE} ] && ${KAFKA_CONF_BY_FILE} && return 0

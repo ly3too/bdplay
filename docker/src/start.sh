@@ -2,6 +2,8 @@
 
 THIS_DIR=`dirname "$0"`
 
+export HADOOP_CLASSPATH=`hadoop classpath`
+
 if [[ "$1" = "help" ]]; then
     echo "Usage: $(basename "$0") (master|worker|help)"
     exit 0
